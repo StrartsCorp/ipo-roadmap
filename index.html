@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IPO Almanac — 上場ロードマップ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0e1118;
+    --ink-2:#141925;
+    --surface:#191f2d;
+    --surface-2:#1f2636;
+    --line:#2b3346;
+    --cream:#ece7d9;
+    --cream-dim:#b8b3a6;
+    --muted:#727a8c;
+    --gold:#e0b84e;
+    --gold-soft:#d4a548;
+
+    --c-keiri:#6fae9a;
+    --c-kansa:#c97a5a;
+    --c-naibu:#7f93c7;
+    --c-gov:#b58bc4;
+    --c-shihon:#c7ab5d;
+    --c-shukan:#5fa0b5;
+    --c-shinsei:#c46f7a;
+    --c-roumu:#8aa86f;
+    --c-seicho:#d49a6a;
+    --c-list:#e0b84e;
+
+    --mincho:'Shippori Mincho', serif;
+    --gothic:'Zen Kaku Gothic New', sans-serif;
+    --mono:'IBM Plex Mono', monospace;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    background:var(--ink);
+    color:var(--cream);
+    font-family:var(--gothic);
+    line-height:1.6;
+    min-height:100vh;
+    background-image:
+      radial-gradient(1200px 600px at 80% -10%, rgba(224,184,78,0.06), transparent 60%),
+      radial-gradient(900px 500px at 0% 110%, rgba(95,160,181,0.05), transparent 55%);
+    overflow-x:hidden;
+  }
+  /* subtle grain */
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0.035;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .wrap{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:38px 22px 90px;}
+
+  /* ---------- Header ---------- */
+  header{border-bottom:1px solid var(--line);padding-bottom:26px;margin-bottom:28px;}
+  .eyebrow{
+    font-family:var(--mono);font-size:11px;letter-spacing:0.32em;text-transform:uppercase;
+    color:var(--gold-soft);margin-bottom:14px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .eyebrow::before{content:"";width:26px;height:1px;background:var(--gold-soft);display:inline-block;}
+  h1{
+    font-family:var(--mincho);font-weight:800;
+    font-size:clamp(30px,6vw,52px);line-height:1.08;letter-spacing:0.01em;
+  }
+  h1 .en{display:block;font-family:var(--mono);font-weight:500;font-size:clamp(11px,2.4vw,15px);
+    letter-spacing:0.3em;color:var(--muted);margin-top:12px;text-transform:uppercase;}
+  .sub{margin-top:18px;display:flex;flex-wrap:wrap;gap:10px 26px;font-size:13px;color:var(--cream-dim);}
+  .sub b{color:var(--cream);font-weight:700;}
+  .sub .goal b{color:var(--gold);}
+
+  /* ---------- Tabs ---------- */
+  .tabs{display:flex;gap:6px;margin:30px 0 26px;border:1px solid var(--line);
+    border-radius:14px;padding:6px;background:var(--ink-2);max-width:430px;}
+  .tab{
+    flex:1;appearance:none;border:none;cursor:pointer;background:transparent;
+    color:var(--cream-dim);font-family:var(--gothic);font-weight:700;font-size:14px;
+    padding:11px 8px;border-radius:9px;transition:all .35s cubic-bezier(.2,.7,.2,1);
+    display:flex;flex-direction:column;align-items:center;gap:3px;letter-spacing:.04em;
+  }
+  .tab .lat{font-family:var(--mono);font-size:9px;letter-spacing:.22em;text-transform:uppercase;opacity:.6;}
+  .tab:hover{color:var(--cream);}
+  .tab.active{background:linear-gradient(180deg,var(--surface-2),var(--surface));color:var(--gold);
+    box-shadow:0 4px 16px rgba(0,0,0,.35),inset 0 0 0 1px var(--line);}
+  .tab.active .lat{opacity:.9;}
+
+  /* ---------- Views ---------- */
+  .view{display:none;animation:fade .5s ease both;}
+  .view.show{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+
+  /* ---------- Annual ---------- */
+  .annual{display:flex;flex-direction:column;gap:0;position:relative;}
+  .yr{
+    position:relative;padding:22px 20px 22px 86px;border:1px solid var(--line);
+    border-radius:16px;background:linear-gradient(135deg,var(--surface),var(--ink-2));
+    margin-bottom:14px;overflow:hidden;opacity:0;transform:translateY(14px);
+    animation:rise .55s cubic-bezier(.2,.7,.2,1) forwards;
+  }
+  @keyframes rise{to{opacity:1;transform:none;}}
+  .yr::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--accent,var(--line));}
+  .yr .ntag{position:absolute;left:18px;top:22px;font-family:var(--mono);font-weight:600;
+    font-size:13px;color:var(--accent,var(--cream));writing-mode:vertical-rl;letter-spacing:.18em;
+    text-orientation:upright;}
+  .yr.listing{background:linear-gradient(135deg,rgba(224,184,78,.14),var(--ink-2));
+    box-shadow:0 0 40px rgba(224,184,78,.1),inset 0 0 0 1px rgba(224,184,78,.25);}
+  .yr-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 14px;margin-bottom:6px;}
+  .yr-phase{font-family:var(--mincho);font-weight:700;font-size:21px;color:var(--cream);}
+  .yr.listing .yr-phase{color:var(--gold);}
+  .yr-dates{font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:.05em;}
+  .yr-role{font-size:12px;color:var(--cream-dim);margin-bottom:13px;}
+  .chips{display:flex;flex-wrap:wrap;gap:7px;}
+  .chip{font-size:12px;padding:5px 11px;border-radius:20px;background:rgba(255,255,255,.04);
+    border:1px solid var(--line);color:var(--cream-dim);display:inline-flex;align-items:center;gap:7px;}
+  .chip .dot{width:7px;height:7px;border-radius:50%;flex:none;}
+  .chip.big{color:var(--gold);border-color:rgba(224,184,78,.4);background:rgba(224,184,78,.08);font-weight:700;}
+
+  /* ---------- Quarterly ---------- */
+  .qyear{margin-bottom:26px;opacity:0;transform:translateY(14px);animation:rise .55s cubic-bezier(.2,.7,.2,1) forwards;}
+  .qyear-head{display:flex;align-items:baseline;gap:12px;margin-bottom:12px;padding-bottom:8px;
+    border-bottom:1px solid var(--line);}
+  .qyear-n{font-family:var(--mono);font-weight:600;font-size:12px;letter-spacing:.16em;
+    color:var(--accent,var(--gold-soft));padding:3px 9px;border:1px solid var(--accent,var(--line));border-radius:6px;}
+  .qyear-label{font-family:var(--mincho);font-weight:700;font-size:17px;}
+  .qyear-dates{font-family:var(--mono);font-size:11px;color:var(--muted);margin-left:auto;}
+  .qgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+  .q{border:1px solid var(--line);border-radius:12px;background:var(--ink-2);padding:13px 13px 15px;
+    min-height:118px;position:relative;transition:transform .3s,box-shadow .3s,border-color .3s;}
+  .q:hover{transform:translateY(-3px);border-color:var(--gold-soft);
+    box-shadow:0 10px 24px rgba(0,0,0,.35);}
+  .q.now{border-color:var(--c-shukan);box-shadow:inset 0 0 0 1px rgba(95,160,181,.3);}
+  .q.list{border-color:var(--gold);background:linear-gradient(160deg,rgba(224,184,78,.12),var(--ink-2));}
+  .q-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;}
+  .q-label{font-family:var(--mono);font-weight:600;font-size:12px;color:var(--gold-soft);letter-spacing:.08em;}
+  .q-months{font-family:var(--mono);font-size:9.5px;color:var(--muted);}
+  .q.now .q-label{color:var(--c-shukan);}
+  .q.list .q-label{color:var(--gold);}
+  .q-now-badge{font-size:9px;font-family:var(--mono);letter-spacing:.1em;color:var(--c-shukan);
+    border:1px solid var(--c-shukan);border-radius:5px;padding:1px 6px;}
+  .q-items{display:flex;flex-direction:column;gap:7px;}
+  .q-item{font-size:11.5px;line-height:1.4;color:var(--cream-dim);display:flex;gap:7px;align-items:flex-start;}
+  .q-item .dot{width:6px;height:6px;border-radius:50%;margin-top:5px;flex:none;}
+  .q-item.major{color:var(--cream);font-weight:500;}
+  .q-item.listing{color:var(--gold);font-weight:700;}
+
+  /* ---------- Monthly ---------- */
+  .months{position:relative;padding-left:30px;}
+  .months::before{content:"";position:absolute;left:7px;top:6px;bottom:6px;width:2px;
+    background:linear-gradient(var(--line),var(--gold-soft) 92%,var(--gold));}
+  .mo{position:relative;padding:0 0 4px 18px;margin-bottom:3px;opacity:0;
+    animation:fade .4s ease forwards;}
+  .mo::before{content:"";position:absolute;left:-26px;top:8px;width:9px;height:9px;border-radius:50%;
+    background:var(--ink);border:2px solid var(--line);}
+  .mo.has::before{background:var(--accent,var(--gold));border-color:var(--accent,var(--gold));
+    box-shadow:0 0 0 4px rgba(224,184,78,.12);}
+  .mo.listing::before{background:var(--gold);border-color:var(--gold);width:14px;height:14px;left:-28px;top:6px;
+    box-shadow:0 0 18px var(--gold),0 0 0 5px rgba(224,184,78,.18);}
+  .mo-row{display:flex;align-items:flex-start;gap:14px;padding:7px 0;}
+  .mo-date{font-family:var(--mono);font-size:12px;color:var(--muted);flex:none;width:64px;padding-top:2px;
+    letter-spacing:.02em;}
+  .mo.has .mo-date{color:var(--cream);}
+  .mo.listing .mo-date{color:var(--gold);font-weight:600;}
+  .mo-body{flex:1;display:flex;flex-direction:column;gap:6px;}
+  .mo-empty{height:1px;}
+  .ev{display:flex;gap:9px;align-items:flex-start;font-size:13px;line-height:1.45;}
+  .ev .dot{width:8px;height:8px;border-radius:50%;margin-top:5px;flex:none;}
+  .ev .txt{color:var(--cream-dim);}
+  .ev.major .txt{color:var(--cream);font-weight:500;}
+  .ev.listing{font-family:var(--mincho);}
+  .ev.listing .txt{color:var(--gold);font-weight:800;font-size:18px;letter-spacing:.02em;}
+  .ev .cat{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:0 5px;margin-left:2px;
+    align-self:center;white-space:nowrap;}
+  .qmark{font-family:var(--mono);font-size:9px;color:var(--muted);opacity:.5;margin-left:6px;}
+
+  /* ---------- Legend ---------- */
+  .legend{margin-top:34px;padding-top:22px;border-top:1px solid var(--line);
+    display:flex;flex-wrap:wrap;gap:9px 16px;}
+  .legend .li{display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--cream-dim);}
+  .legend .dot{width:9px;height:9px;border-radius:50%;}
+
+  .foot{margin-top:30px;font-size:11px;color:var(--muted);line-height:1.7;font-family:var(--mono);
+    letter-spacing:.02em;}
+
+  @media(max-width:680px){
+    .qgrid{grid-template-columns:1fr 1fr;}
+    .yr{padding-left:70px;}
+    .tab{font-size:12.5px;}
+    h1 .en{letter-spacing:.2em;}
+  }
+  @media(max-width:430px){
+    .qgrid{grid-template-columns:1fr;}
+    .mo-date{width:56px;font-size:11px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">IPO ROADMAP · 東証グロース市場</div>
+    <h1>上場ロードマップ
+      <span class="en">Annual / Quarterly / Monthly Almanac</span>
+    </h1>
+    <div class="sub">
+      <span>決算期 <b>9月（10月〜9月）</b></span>
+      <span class="goal">目標 <b>2030年11月 上場</b></span>
+      <span>起点 <b>2026年6月（現在地）</b></span>
+    </div>
+  </header>
+
+  <div class="tabs" role="tablist">
+    <button class="tab active" data-view="annual">年次<span class="lat">Annual</span></button>
+    <button class="tab" data-view="quarter">四半期<span class="lat">Quarterly</span></button>
+    <button class="tab" data-view="month">月次<span class="lat">Monthly</span></button>
+  </div>
+
+  <div id="annual" class="view show"></div>
+  <div id="quarter" class="view"></div>
+  <div id="month" class="view"></div>
+
+  <div class="legend" id="legend"></div>
+
+  <div class="foot">
+    9月決算・11月上場は直前期決算（9月末）からの余白が薄く、決算早期化が前提。<br>
+    11月が窮屈な場合の保険：同一申請期内の2031年春〜初夏に後ろ倒し。<br>
+    監査証明は直前期・直前々期の2期分が必要 ／ 監査契約は遅くともN-3期中（〜2028年9月）。
+  </div>
+</div>
+
+<script>
+/* ---------- category palette ---------- */
+const CAT = {
+  keiri:{n:'経理',c:'var(--c-keiri)'},
+  kansa:{n:'監査',c:'var(--c-kansa)'},
+  naibu:{n:'内部統制',c:'var(--c-naibu)'},
+  gov:{n:'ガバナンス',c:'var(--c-gov)'},
+  shihon:{n:'資本政策',c:'var(--c-shihon)'},
+  shukan:{n:'主幹事',c:'var(--c-shukan)'},
+  shinsei:{n:'申請・審査',c:'var(--c-shinsei)'},
+  roumu:{n:'労務・法務',c:'var(--c-roumu)'},
+  seicho:{n:'成長戦略',c:'var(--c-seicho)'},
+  list:{n:'上場',c:'var(--c-list)'}
+};
+
+/* ---------- ANNUAL (fiscal years) ---------- */
+const YEARS = [
+  {n:'N-5', phase:'地ならし', dates:'2025.10 – 2026.9', role:'採用準備・帳簿の現状把握', accent:'var(--c-keiri)',
+   chips:[['経理採用の要件定義','keiri'],['MF仕訳の課題棚卸し','keiri'],['主幹事・支援先と情報交換','shukan'],['資本政策の初期設計','shihon']]},
+  {n:'N-4', phase:'準備本格化', dates:'2026.10 – 2027.9', role:'経理内製化とショートレビュー', accent:'var(--c-keiri)',
+   chips:[['専任経理 入社（12月〜1月）','keiri',true],['ショートレビュー実施（春）','kansa',true],['SR監査法人の選定','kansa'],['主幹事ヒアリング','shukan'],['セグメント・管理会計設計','shihon']]},
+  {n:'N-3', phase:'監査の助走', dates:'2027.10 – 2028.9', role:'監査契約・規程・ガバナンス着手', accent:'var(--c-kansa)',
+   chips:[['監査契約 締結','kansa',true],['主幹事証券 決定','shukan'],['内部統制 着手','naibu'],['規程体系の整備','naibu'],['ガバナンス着手（社外役員）','gov'],['関係会社・資本関係の整理','shihon']]},
+  {n:'N-2', phase:'監査1期目', dates:'2028.10 – 2029.9', role:'直前々期・内部統制の本格運用', accent:'var(--c-kansa)', tag:'直前々期',
+   chips:[['監査開始（10/1）','kansa',true],['内部統制 本格運用','naibu'],['四半期レビュー体制','kansa'],['予算統制の精度向上','seicho'],['労務是正 完了','roumu']]},
+  {n:'N-1', phase:'監査2期目', dates:'2029.10 – 2030.9', role:'直前期・申請書類と成長戦略', accent:'var(--c-shinsei)', tag:'直前期',
+   chips:[['決算早期化（生命線）','kansa',true],['申請書類 作成（Iの部/IIの部）','shinsei'],['引受審査 クリア','shukan'],['エクイティストーリー精緻化','seicho'],['ガバナンス最終形 稼働','gov']]},
+  {n:'N', phase:'申請・上場期', dates:'2030.10 – 2031.9', role:'東証審査 → 上場', accent:'var(--c-list)', listing:true,
+   chips:[['直前期監査 確定','kansa'],['東証へ上場申請','shinsei'],['東証審査','shinsei'],['★ 2030年11月 上場','list',true],['保険：2031年春〜初夏','list']]}
+];
+
+/* ---------- QUARTERLY ---------- */
+/* fiscal quarters: Q1 Oct-Dec, Q2 Jan-Mar, Q3 Apr-Jun, Q4 Jul-Sep */
+const QYEARS = [
+  {n:'N-5', label:'2025年度', dates:'25.10–26.9', accent:'var(--c-keiri)', q:[
+    {l:'Q1',m:'25.10–12',items:[]},
+    {l:'Q2',m:'26.1–3',items:[]},
+    {l:'Q3',m:'26.4–6',now:true,items:[['現在地・課題棚卸し開始','shukan','major'],['主幹事と情報交換','shukan']]},
+    {l:'Q4',m:'26.7–9',items:[['経理採用 要件定義','keiri'],['9月 採用募集開始','keiri','major']]}
+  ]},
+  {n:'N-4', label:'2026年度', dates:'26.10–27.9', accent:'var(--c-keiri)', q:[
+    {l:'Q1',m:'26.10–12',items:[['採用選考','keiri'],['専任経理 入社（12月〜）','keiri','major']]},
+    {l:'Q2',m:'27.1–3',items:[['経理立ち上げ','keiri'],['MF仕訳の精度改善','keiri'],['SR法人 選定確定','kansa']]},
+    {l:'Q3',m:'27.4–6',items:[['ショートレビュー実施','kansa','major'],['指摘事項の改善着手','kansa']]},
+    {l:'Q4',m:'27.7–9',items:[['主幹事ヒアリング','shukan'],['セグメント設計','shihon']]}
+  ]},
+  {n:'N-3', label:'2027年度', dates:'27.10–28.9', accent:'var(--c-kansa)', q:[
+    {l:'Q1',m:'27.10–12',items:[['監査契約 交渉','kansa'],['内部統制 着手','naibu']]},
+    {l:'Q2',m:'28.1–3',items:[['規程整備','naibu'],['監査体制 方針決定','gov']]},
+    {l:'Q3',m:'28.4–6',items:[['主幹事 決定','shukan','major'],['社外役員 探索','gov']]},
+    {l:'Q4',m:'28.7–9',items:[['監査契約 締結','kansa','major'],['関係会社 整理','shihon'],['月次早期化 運用','keiri']]}
+  ]},
+  {n:'N-2', label:'2028年度', dates:'28.10–29.9', accent:'var(--c-kansa)', tag:'直前々期', q:[
+    {l:'Q1',m:'28.10–12',items:[['監査1期目 開始（10/1）','kansa','major'],['内部統制 本格運用','naibu']]},
+    {l:'Q2',m:'29.1–3',items:[['四半期レビュー体制 確立','kansa']]},
+    {l:'Q3',m:'29.4–6',items:[['予算統制 精度向上','seicho'],['内部監査 立ち上げ','naibu']]},
+    {l:'Q4',m:'29.7–9',items:[['労務是正 完了','roumu'],['許認可・契約 整備','roumu'],['直前々期 決算','kansa']]}
+  ]},
+  {n:'N-1', label:'2029年度', dates:'29.10–30.9', accent:'var(--c-shinsei)', tag:'直前期', q:[
+    {l:'Q1',m:'29.10–12',items:[['監査2期目','kansa'],['申請書類 着手','shinsei','major']]},
+    {l:'Q2',m:'30.1–3',items:[['引受審査 本格化','shukan'],['エクイティストーリー精緻化','seicho']]},
+    {l:'Q3',m:'30.4–6',items:[['想定時価総額・流通比率 設計','shihon'],['ガバナンス最終形 稼働','gov']]},
+    {l:'Q4',m:'30.7–9',items:[['直前期 決算（9月末）','kansa','major'],['決算早期化が生命線','kansa']]}
+  ]},
+  {n:'N', label:'2030年度', dates:'30.10–31.9', accent:'var(--c-list)', q:[
+    {l:'Q1',m:'30.10–12',list:true,items:[['直前期監査 確定','kansa'],['東証へ申請・審査','shinsei','major'],['★ 11月 上場','list','listing']]},
+    {l:'Q2',m:'31.1–3',items:[['保険：春上場の準備','list']]},
+    {l:'Q3',m:'31.4–6',items:[['保険：春〜初夏 上場ウィンドウ','list']]},
+    {l:'Q4',m:'31.7–9',items:[]}
+  ]}
+];
+
+/* ---------- MONTHLY ---------- */
+/* key markers keyed by 'YYYY-M' */
+const MEV = {
+  '2026-6':[['現在地 — グランドデザイン始動','shukan','major']],
+  '2026-9':[['経理採用 募集開始','keiri','major']],
+  '2026-12':[['専任経理 入社','keiri','major']],
+  '2027-1':[['経理立ち上げ・MF仕訳改善','keiri']],
+  '2027-4':[['ショートレビュー実施（春）','kansa','major']],
+  '2027-5':[['SR指摘事項の改善着手','kansa']],
+  '2027-9':[['セグメント・管理会計 設計完了','shihon']],
+  '2028-1':[['規程体系の整備','naibu']],
+  '2028-6':[['主幹事証券 決定','shukan','major']],
+  '2028-9':[['監査契約 締結（期首残高検証）','kansa','major']],
+  '2028-10':[['監査1期目 開始 — 直前々期','kansa','major']],
+  '2029-1':[['四半期レビュー体制 確立','kansa']],
+  '2029-9':[['労務是正 完了／直前々期 決算','roumu']],
+  '2029-10':[['監査2期目 開始 — 直前期','kansa']],
+  '2029-11':[['申請書類（Iの部/IIの部）着手','shinsei']],
+  '2030-3':[['エクイティストーリー精緻化','seicho']],
+  '2030-9':[['直前期 決算（期末）','kansa','major']],
+  '2030-10':[['直前期監査 確定／東証へ申請','shinsei','major']],
+  '2030-11':[['2030年11月 上場','list','listing']],
+  '2031-4':[['保険：春〜初夏 上場ウィンドウ','list']]
+};
+
+function fq(month){ // fiscal quarter label for a calendar month (Oct-Sep FY)
+  if(month>=10) return 'Q1';
+  if(month<=3) return 'Q2';
+  if(month<=6) return 'Q3';
+  return 'Q4';
+}
+
+/* ---------- renderers ---------- */
+function renderAnnual(){
+  const el=document.getElementById('annual');
+  el.innerHTML='<div class="annual">'+YEARS.map((y,i)=>{
+    const chips=y.chips.map(c=>{
+      const cat=CAT[c[1]];const big=c[2]?' big':'';
+      return `<span class="chip${big}"><span class="dot" style="background:${cat.c}"></span>${c[0]}</span>`;
+    }).join('');
+    const tag=y.tag?`<span class="yr-dates" style="color:var(--gold-soft)">［${y.tag}］</span>`:'';
+    return `<div class="yr${y.listing?' listing':''}" style="--accent:${y.accent};animation-delay:${i*70}ms">
+      <span class="ntag">${y.n}</span>
+      <div class="yr-head">
+        <span class="yr-phase">${y.phase}</span>
+        <span class="yr-dates">${y.dates}</span>${tag}
+      </div>
+      <div class="yr-role">${y.role}</div>
+      <div class="chips">${chips}</div>
+    </div>`;
+  }).join('')+'</div>';
+}
+
+function renderQuarter(){
+  const el=document.getElementById('quarter');
+  el.innerHTML=QYEARS.map((yr,i)=>{
+    const cells=yr.q.map(q=>{
+      const items=q.items.map(it=>{
+        const cat=CAT[it[1]];const cls=it[2]?' '+it[2]:'';
+        return `<div class="q-item${cls}"><span class="dot" style="background:${cat.c}"></span>${it[0]}</div>`;
+      }).join('');
+      const cls=(q.now?' now':'')+(q.list?' list':'');
+      const badge=q.now?'<span class="q-now-badge">NOW</span>':'';
+      return `<div class="q${cls}">
+        <div class="q-top"><span class="q-label">${q.l}</span>${badge||`<span class="q-months">${q.m}</span>`}</div>
+        <div class="q-items">${items||''}</div>
+      </div>`;
+    }).join('');
+    const tag=yr.tag?` ・ ${yr.tag}`:'';
+    return `<div class="qyear" style="--accent:${yr.accent};animation-delay:${i*60}ms">
+      <div class="qyear-head">
+        <span class="qyear-n">${yr.n}</span>
+        <span class="qyear-label">${yr.label}${tag}</span>
+        <span class="qyear-dates">${yr.dates}</span>
+      </div>
+      <div class="qgrid">${cells}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderMonth(){
+  const el=document.getElementById('month');
+  let html='<div class="months">';
+  let idx=0;
+  for(let y=2026;y<=2031;y++){
+    const start=(y===2026)?6:1;
+    const end=(y===2031)?6:12;
+    for(let m=start;m<=end;m++){
+      const key=y+'-'+m;
+      const evs=MEV[key];
+      const has=!!evs;
+      const isList=has&&evs.some(e=>e[2]==='listing');
+      let accent='var(--gold)';
+      if(has) accent=CAT[evs[0][1]].c;
+      let body;
+      if(has){
+        body=evs.map(e=>{
+          const cat=CAT[e[1]];const cls=e[2]?' '+e[2]:'';
+          return `<div class="ev${cls}"><span class="dot" style="background:${cat.c}"></span>
+            <span class="txt">${e[0]}</span><span class="cat">${cat.n}</span></div>`;
+        }).join('');
+      } else {
+        body='<div class="mo-empty"></div>';
+      }
+      const delay=Math.min(idx*14,900);
+      html+=`<div class="mo${has?' has':''}${isList?' listing':''}" style="--accent:${accent};animation-delay:${delay}ms">
+        <div class="mo-row">
+          <span class="mo-date">${y}.${String(m).padStart(2,'0')}<span class="qmark">${fq(m)}</span></span>
+          <div class="mo-body">${body}</div>
+        </div>
+      </div>`;
+      idx++;
+    }
+  }
+  html+='</div>';
+  el.innerHTML=html;
+}
+
+function renderLegend(){
+  const el=document.getElementById('legend');
+  el.innerHTML=Object.values(CAT).map(c=>
+    `<span class="li"><span class="dot" style="background:${c.c}"></span>${c.n}</span>`
+  ).join('');
+}
+
+/* ---------- tabs ---------- */
+const rendered={annual:true};
+renderAnnual();renderLegend();
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(x=>x.classList.remove('show'));
+    t.classList.add('active');
+    const v=t.dataset.view;
+    const map={annual:'annual',quarter:'quarter',month:'month'};
+    const id=map[v];
+    if(!rendered[id]){
+      if(id==='quarter')renderQuarter();
+      if(id==='month')renderMonth();
+      rendered[id]=true;
+    }
+    document.getElementById(id).classList.add('show');
+  });
+});
+</script>
+</body>
+</html>
